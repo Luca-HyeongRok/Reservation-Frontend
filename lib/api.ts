@@ -52,10 +52,16 @@ export async function fetchReservations(): Promise<Reservation[]> {
 }
 
 export async function createReservation(payload: ReservationCreateRequest): Promise<Reservation> {
+  // 프론트 도메인 모델 → 백엔드 DTO 변환
+  const serverPayload = {
+    customerName: payload.name,
+    reservedAt: `${payload.date}T${payload.time}:00`,
+  };
+
   const response = await fetch(`${API_BASE_URL}/api/reservations`, {
     method: "POST",
     headers: JSON_HEADERS,
-    body: JSON.stringify(payload),
+    body: JSON.stringify(serverPayload),
   });
 
   if (!response.ok) {

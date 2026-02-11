@@ -2,13 +2,18 @@
 
 /**
  * 상태/로직 계층 (커스텀 훅)
- * - 예약 목록 조회, 생성, 로딩/에러 상태를 화면에서 분리합니다.
+ * - 예약 목록 조회, 생성, 상태 변경, 로딩/에러 상태를 화면에서 분리합니다.
  * - 페이지와 컴포넌트는 "무엇을 보여줄지"에 집중하게 만듭니다.
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { createReservation, fetchReservations } from "@/lib/api";
-import type { Reservation, ReservationCreateRequest } from "@/types/reservation";
+import {
+  approveReservation as approveReservationApi,
+  cancelReservation as cancelReservationApi,
+  createReservation,
+  fetchReservations,
+} from "@/lib/api";
+import type { Reservation, ReservationCreateRequest, ReservationStatus } from "@/types/reservation";
 
 export function useReservations() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -43,6 +48,44 @@ export function useReservations() {
     }
   }, []);
 
+  const updateReservationStatus = useCallback(
+    async (id: string, nextStatus: ReservationStatus, request: (reservationId: string) => Promise<void>) => {
+      setError(null);
+
+      // 낙관적 업데이트: 먼저 화면 상태를 바꾸고 실패 시 이전 상태로 롤백합니다.
+      const previous = reservations;
+      setReservations((current) =>
+        current.map((reservation) =>
+          reservation.id === id ? { ...reservation, status: nextStatus } : reservation,
+        ),
+      );
+
+      try {
+        await request(id);
+      } catch (err) {
+        setReservations(previous);
+        const message = err instanceof Error ? err.message : "상태 변경 중 오류가 발생했습니다.";
+        setError(message);
+        throw err;
+      }
+    },
+    [reservations],
+  );
+
+  const approveReservation = useCallback(
+    async (id: string) => {
+      await updateReservationStatus(id, "APPROVED", approveReservationApi);
+    },
+    [updateReservationStatus],
+  );
+
+  const cancelReservation = useCallback(
+    async (id: string) => {
+      await updateReservationStatus(id, "CANCELLED", cancelReservationApi);
+    },
+    [updateReservationStatus],
+  );
+
   useEffect(() => {
     void loadReservations();
   }, [loadReservations]);
@@ -53,5 +96,7 @@ export function useReservations() {
     error,
     loadReservations,
     addReservation,
+    approveReservation,
+    cancelReservation,
   };
 }

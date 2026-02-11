@@ -33,8 +33,23 @@ export async function createReservation(payload: ReservationCreateRequest): Prom
     date: payload.date,
     time: payload.time,
     partySize: payload.partySize,
+    status: "PENDING",
     createdAt: new Date().toISOString(),
   };
+}
+
+export async function approveReservation(id: string): Promise<void> {
+  // 추후 실제 API 연동 시 승인 엔드포인트를 사용합니다.
+  // const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/approve`, { method: "PATCH" });
+  // if (!response.ok) throw new Error("예약 승인에 실패했습니다.");
+  void id;
+}
+
+export async function cancelReservation(id: string): Promise<void> {
+  // 추후 실제 API 연동 시 취소 엔드포인트를 사용합니다.
+  // const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/cancel`, { method: "PATCH" });
+  // if (!response.ok) throw new Error("예약 취소에 실패했습니다.");
+  void id;
 }
 
 export { API_BASE_URL };

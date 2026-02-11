@@ -28,9 +28,9 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 bg-slate-50 px-6 py-10">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-bold text-slate-900">Reservation Dashboard</h1>
-        <p className="text-sm text-slate-600">구조 중심 설계를 보여주기 위한 포트폴리오 스켈레톤</p>
+      <header className="space-y-1 border-b border-slate-200 pb-4">
+        <h1 className="text-3xl font-bold text-slate-900">Reservation Dashboard</h1>
+        <p className="text-sm text-slate-500">구조 중심 설계를 보여주기 위한 포트폴리오 스켈레톤</p>
       </header>
 
       {error ? <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p> : null}

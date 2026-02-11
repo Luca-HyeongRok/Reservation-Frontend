@@ -37,7 +37,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-slate-200 bg-white p-4">
+    <form onSubmit={handleSubmit} className="space-y-5 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <h2 className="text-lg font-semibold text-slate-900">예약 등록</h2>
 
       <input
@@ -48,7 +48,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
         required
       />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <input
           type="date"
           className="w-full rounded-md border border-slate-300 px-3 py-2"

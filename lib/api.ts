@@ -6,18 +6,27 @@
 
 import type { Reservation, ReservationCreateRequest } from "@/types/reservation";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/+$/, "");
 
 // 요청 형식을 통일해 API 계층의 일관성을 유지합니다.
-const JSON_HEADERS: HeadersInit = {
+const BASE_HEADERS: HeadersInit = {
   Accept: "application/json",
+};
+
+// 본문이 있는 요청은 JSON Content-Type을 명시합니다.
+const JSON_HEADERS: HeadersInit = {
+  ...BASE_HEADERS,
   "Content-Type": "application/json",
+};
+
+const PATCH_HEADERS: HeadersInit = {
+  Accept: "application/json",
 };
 
 export async function fetchReservations(): Promise<Reservation[]> {
   const response = await fetch(`${API_BASE_URL}/api/reservations`, {
     method: "GET",
-    headers: JSON_HEADERS,
+    headers: BASE_HEADERS,
     cache: "no-store",
   });
 
@@ -45,7 +54,7 @@ export async function createReservation(payload: ReservationCreateRequest): Prom
 export async function approveReservation(id: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/approve`, {
     method: "PATCH",
-    headers: JSON_HEADERS,
+    headers: PATCH_HEADERS,
   });
 
   if (!response.ok) {
@@ -56,7 +65,7 @@ export async function approveReservation(id: string): Promise<void> {
 export async function cancelReservation(id: string): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/cancel`, {
     method: "PATCH",
-    headers: JSON_HEADERS,
+    headers: PATCH_HEADERS,
   });
 
   if (!response.ok) {

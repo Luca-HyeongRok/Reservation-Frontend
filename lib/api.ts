@@ -23,6 +23,20 @@ const PATCH_HEADERS: HeadersInit = {
   Accept: "application/json",
 };
 
+async function throwApiError(response: Response, fallbackMessage: string): Promise<never> {
+  try {
+    const json = (await response.json()) as { message?: string };
+    // 백엔드 에러 메시지를 사용자에게 그대로 전달
+    if (typeof json.message === "string" && json.message.trim().length > 0) {
+      throw new Error(json.message);
+    }
+  } catch {
+    // JSON 파싱 실패 또는 예상 형식이 아닌 경우 기본 메시지를 사용합니다.
+  }
+
+  throw new Error(fallbackMessage);
+}
+
 export async function fetchReservations(): Promise<Reservation[]> {
   const response = await fetch(`${API_BASE_URL}/api/reservations`, {
     method: "GET",
@@ -31,7 +45,7 @@ export async function fetchReservations(): Promise<Reservation[]> {
   });
 
   if (!response.ok) {
-    throw new Error("예약 목록 조회에 실패했습니다.");
+    await throwApiError(response, "예약 목록 조회에 실패했습니다.");
   }
 
   return response.json();
@@ -45,7 +59,7 @@ export async function createReservation(payload: ReservationCreateRequest): Prom
   });
 
   if (!response.ok) {
-    throw new Error("예약 생성에 실패했습니다.");
+    await throwApiError(response, "예약 생성에 실패했습니다.");
   }
 
   return response.json();
@@ -58,7 +72,7 @@ export async function approveReservation(id: string): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error("예약 승인에 실패했습니다.");
+    await throwApiError(response, "예약 승인에 실패했습니다.");
   }
 }
 
@@ -69,7 +83,7 @@ export async function cancelReservation(id: string): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error("예약 취소에 실패했습니다.");
+    await throwApiError(response, "예약 취소에 실패했습니다.");
   }
 }
 

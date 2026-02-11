@@ -1,20 +1,19 @@
-ï»¿/**
- * API ê³„ì¸µ
- * - ì™¸ë¶€(Spring Boot)ì™€ í†µì‹ í•˜ëŠ” ì½”ë“œë¥¼ í•œê³³ì— ëª¨ìë‹ˆë‹¤.
- * - í™”ë©´ê³¼ í›…ì—ì„œ í†µì‹  ì„¸ë¶€ êµ¬í˜„ì„ ëª°ë¼ë„ ë˜ë„ë¡ ê²½ê³„ë¥¼ ë§Œë“­ë‹ˆë‹¤.
+/**
+ * API °èÃş
+ * - ¿ÜºÎ(Spring Boot)¿Í Åë½ÅÇÏ´Â ÄÚµå¸¦ ÇÑ°÷¿¡ ¸ğÀ¾´Ï´Ù.
+ * - È­¸é°ú ÈÅ¿¡¼­ Åë½Å ¼¼ºÎ ±¸ÇöÀ» ¸ô¶óµµ µÇµµ·Ï °æ°è¸¦ ¸¸µì´Ï´Ù.
  */
 
 import type { Reservation, ReservationCreateRequest } from "@/types/reservation";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/+$/, "");
-console.log("API_BASE_URL:", API_BASE_URL);
 
-// ìš”ì²­ í˜•ì‹ì„ í†µì¼í•´ API ê³„ì¸µì˜ ì¼ê´€ì„±ì„ ìœ ì§€í•©ë‹ˆë‹¤.
+// ¿äÃ» Çü½ÄÀ» ÅëÀÏÇØ API °èÃşÀÇ ÀÏ°ü¼ºÀ» À¯ÁöÇÕ´Ï´Ù.
 const BASE_HEADERS: HeadersInit = {
   Accept: "application/json",
 };
 
-// ë³¸ë¬¸ì´ ìˆëŠ” ìš”ì²­ì€ JSON Content-Typeì„ ëª…ì‹œí•©ë‹ˆë‹¤.
+// º»¹®ÀÌ ÀÖ´Â ¿äÃ»Àº JSON Content-TypeÀ» ¸í½ÃÇÕ´Ï´Ù.
 const JSON_HEADERS: HeadersInit = {
   ...BASE_HEADERS,
   "Content-Type": "application/json",
@@ -32,7 +31,7 @@ export async function fetchReservations(): Promise<Reservation[]> {
   });
 
   if (!response.ok) {
-    throw new Error("ì˜ˆì•½ ëª©ë¡ ì¡°íšŒì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
+    throw new Error("¿¹¾à ¸ñ·Ï Á¶È¸¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
   }
 
   return response.json();
@@ -46,7 +45,7 @@ export async function createReservation(payload: ReservationCreateRequest): Prom
   });
 
   if (!response.ok) {
-    throw new Error("ì˜ˆì•½ ìƒì„±ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
+    throw new Error("¿¹¾à »ı¼º¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
   }
 
   return response.json();
@@ -59,7 +58,7 @@ export async function approveReservation(id: string): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error("ì˜ˆì•½ ìŠ¹ì¸ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
+    throw new Error("¿¹¾à ½ÂÀÎ¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
   }
 }
 
@@ -70,7 +69,7 @@ export async function cancelReservation(id: string): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error("ì˜ˆì•½ ì·¨ì†Œì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.");
+    throw new Error("¿¹¾à Ãë¼Ò¿¡ ½ÇÆĞÇß½À´Ï´Ù.");
   }
 }
 

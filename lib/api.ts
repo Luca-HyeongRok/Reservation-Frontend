@@ -7,6 +7,7 @@
 import type { Reservation, ReservationCreateRequest } from "@/types/reservation";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/+$/, "");
+console.log("API_BASE_URL:", API_BASE_URL);
 
 // 요청 형식을 통일해 API 계층의 일관성을 유지합니다.
 const BASE_HEADERS: HeadersInit = {

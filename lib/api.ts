@@ -8,48 +8,60 @@ import type { Reservation, ReservationCreateRequest } from "@/types/reservation"
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 
-export async function fetchReservations(): Promise<Reservation[]> {
-  // 추후 실제 API 연동 시 엔드포인트를 확정합니다.
-  // const response = await fetch(`${API_BASE_URL}/api/reservations`, { cache: "no-store" });
-  // if (!response.ok) throw new Error("예약 목록 조회에 실패했습니다.");
-  // return response.json();
+// 요청 형식을 통일해 API 계층의 일관성을 유지합니다.
+const JSON_HEADERS: HeadersInit = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
 
-  return [];
+export async function fetchReservations(): Promise<Reservation[]> {
+  const response = await fetch(`${API_BASE_URL}/api/reservations`, {
+    method: "GET",
+    headers: JSON_HEADERS,
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("예약 목록 조회에 실패했습니다.");
+  }
+
+  return response.json();
 }
 
 export async function createReservation(payload: ReservationCreateRequest): Promise<Reservation> {
-  // 추후 실제 API 연동 시 POST 요청으로 교체합니다.
-  // const response = await fetch(`${API_BASE_URL}/api/reservations`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify(payload),
-  // });
-  // if (!response.ok) throw new Error("예약 생성에 실패했습니다.");
-  // return response.json();
+  const response = await fetch(`${API_BASE_URL}/api/reservations`, {
+    method: "POST",
+    headers: JSON_HEADERS,
+    body: JSON.stringify(payload),
+  });
 
-  return {
-    id: crypto.randomUUID(),
-    name: payload.name,
-    date: payload.date,
-    time: payload.time,
-    partySize: payload.partySize,
-    status: "PENDING",
-    createdAt: new Date().toISOString(),
-  };
+  if (!response.ok) {
+    throw new Error("예약 생성에 실패했습니다.");
+  }
+
+  return response.json();
 }
 
 export async function approveReservation(id: string): Promise<void> {
-  // 추후 실제 API 연동 시 승인 엔드포인트를 사용합니다.
-  // const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/approve`, { method: "PATCH" });
-  // if (!response.ok) throw new Error("예약 승인에 실패했습니다.");
-  void id;
+  const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/approve`, {
+    method: "PATCH",
+    headers: JSON_HEADERS,
+  });
+
+  if (!response.ok) {
+    throw new Error("예약 승인에 실패했습니다.");
+  }
 }
 
 export async function cancelReservation(id: string): Promise<void> {
-  // 추후 실제 API 연동 시 취소 엔드포인트를 사용합니다.
-  // const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/cancel`, { method: "PATCH" });
-  // if (!response.ok) throw new Error("예약 취소에 실패했습니다.");
-  void id;
+  const response = await fetch(`${API_BASE_URL}/api/reservations/${id}/cancel`, {
+    method: "PATCH",
+    headers: JSON_HEADERS,
+  });
+
+  if (!response.ok) {
+    throw new Error("예약 취소에 실패했습니다.");
+  }
 }
 
 export { API_BASE_URL };

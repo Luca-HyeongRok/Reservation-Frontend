@@ -14,9 +14,9 @@ interface ReservationListProps {
 }
 
 const STATUS_STYLES: Record<ReservationStatus, string> = {
-  PENDING: "bg-gray-100 text-gray-700",
-  APPROVED: "bg-green-100 text-green-700",
-  CANCELLED: "bg-red-100 text-red-700",
+  PENDING: "bg-gray-100 text-gray-600",
+  APPROVED: "bg-green-100 text-green-600",
+  CANCELLED: "bg-red-100 text-red-600",
 };
 
 const STATUS_LABELS: Record<ReservationStatus, string> = {
@@ -45,39 +45,54 @@ export default function ReservationList({
         // 상태 전이 규칙: PENDING -> APPROVED/CANCELLED, APPROVED -> CANCELLED
         const canApprove = reservation.status === "PENDING";
         const canCancel = reservation.status === "PENDING" || reservation.status === "APPROVED";
+        const date = new Date(reservation.reservedAt);
+        const formatter = new Intl.DateTimeFormat("ko-KR", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+        const parts = formatter.formatToParts(date);
+        const year = parts.find((part) => part.type === "year")?.value ?? "0000";
+        const month = parts.find((part) => part.type === "month")?.value ?? "00";
+        const day = parts.find((part) => part.type === "day")?.value ?? "00";
+        const hour = parts.find((part) => part.type === "hour")?.value ?? "00";
+        const minute = parts.find((part) => part.type === "minute")?.value ?? "00";
+        const formattedReservedAt = `${year}-${month}-${day} ${hour}:${minute}`;
 
         return (
           <li key={reservation.id} className="space-y-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="font-medium text-slate-900">{reservation.name}</p>
-                <p className="text-sm text-slate-600">
-                  {reservation.date} {reservation.time} · {reservation.partySize}명
-                </p>
-              </div>
-
-              <span className={`rounded-full px-2 py-1 text-xs font-medium ${STATUS_STYLES[reservation.status]}`}>
-                {STATUS_LABELS[reservation.status]}
-              </span>
+            <div className="space-y-1">
+              <p className="font-semibold text-slate-900">{reservation.customerName}</p>
+              <p className="text-sm text-slate-600">예약 일시: {formattedReservedAt}</p>
+              <p className="text-sm text-slate-600">인원: {reservation.partySize}명</p>
             </div>
 
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => void onApprove(reservation.id)}
-                disabled={!canApprove}
-                className="rounded-md border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
-              >
-                승인
-              </button>
-              <button
-                type="button"
-                onClick={() => void onCancel(reservation.id)}
-                disabled={!canCancel}
-                className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-700 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
-              >
-                취소
-              </button>
+            <div className="flex items-center justify-between gap-3">
+              <span className={`rounded-full px-2 py-1 text-xs ${STATUS_STYLES[reservation.status]}`}>
+                {STATUS_LABELS[reservation.status]}
+              </span>
+
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => void onApprove(reservation.id)}
+                  disabled={!canApprove}
+                  className="rounded-md border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+                >
+                  승인
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void onCancel(reservation.id)}
+                  disabled={!canCancel}
+                  className="rounded-md border border-red-300 px-3 py-1.5 text-sm text-red-700 disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+                >
+                  취소
+                </button>
+              </div>
             </div>
           </li>
         );

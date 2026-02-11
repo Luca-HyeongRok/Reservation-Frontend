@@ -8,12 +8,10 @@ export type ReservationStatus = "PENDING" | "APPROVED" | "CANCELLED";
 
 export interface Reservation {
   id: string;
-  name: string;
-  date: string; // 날짜 형식: YYYY-MM-DD
-  time: string; // 시간 형식: HH:mm
+  customerName: string;
+  reservedAt: string; // 날짜+시간 형식: ISO-8601 LocalDateTime
   partySize: number;
   status: ReservationStatus;
-  createdAt: string;
 }
 
 export interface ReservationCreateRequest {

@@ -56,6 +56,7 @@ export async function createReservation(payload: ReservationCreateRequest): Prom
   const serverPayload = {
     customerName: payload.name,
     reservedAt: `${payload.date}T${payload.time}:00`,
+    partySize: payload.partySize,
   };
 
   const response = await fetch(`${API_BASE_URL}/api/reservations`, {

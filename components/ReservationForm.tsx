@@ -20,12 +20,34 @@ const INITIAL_FORM: ReservationCreateRequest = {
   partySize: 2,
 };
 
+function toLocalDateInputValue(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function toLocalTimeInputValue(date: Date): string {
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
 export default function ReservationForm({ onSubmit }: ReservationFormProps) {
   const [form, setForm] = useState<ReservationCreateRequest>(INITIAL_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const today = toLocalDateInputValue(new Date());
+  const minTime = form.date === today ? toLocalTimeInputValue(new Date()) : undefined;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const selectedDateTime = new Date(`${form.date}T${form.time}:00`);
+
+    if (!Number.isNaN(selectedDateTime.getTime()) && selectedDateTime < new Date()) {
+      window.alert("지난 날짜/시간은 예약할 수 없습니다.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -53,6 +75,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
           type="date"
           className="w-full rounded-md border border-slate-300 px-3 py-2"
           value={form.date}
+          min={today}
           onChange={(e) => setForm((prev) => ({ ...prev, date: e.target.value }))}
           required
         />
@@ -60,6 +83,7 @@ export default function ReservationForm({ onSubmit }: ReservationFormProps) {
           type="time"
           className="w-full rounded-md border border-slate-300 px-3 py-2"
           value={form.time}
+          min={minTime}
           onChange={(e) => setForm((prev) => ({ ...prev, time: e.target.value }))}
           required
         />
